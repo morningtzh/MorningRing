@@ -17,3 +17,8 @@ jobs:
         target: esp32
         path: '.'
         command: idf.py build
+    - name: upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: MorningRing.bin
+        path: build/MorningRing.bin
