@@ -1,9 +1,8 @@
+#include <unistd.h>
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
 #include "freertos/task.h"
-#include "lwip/err.h"
-#include "lwip/sys.h"
 #include "esp_wifi.h"
 
 static const char* MODULE = "WIFI";
@@ -43,23 +42,21 @@ void wifi_connect_sta(void *afterDisconnect=nullptr) {
 }
 
 
-static void event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data) {
-    TaskHandle_t xHandle = NULL;
-
+static void event_handler([[maybe_unused]] void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data) {
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         xTaskCreate(wifi_connect_sta, "WiFi Connect", 10 * 1024, nullptr, 5, nullptr);
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
         bool isDisconnect = true;
         xTaskCreate(wifi_connect_sta, "WiFi Reconnect", 10 * 1024, &isDisconnect, 5, nullptr);
     } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
-        ip_event_got_ip_t* event = (ip_event_got_ip_t*)event_data;
+        auto* event = (ip_event_got_ip_t*)event_data;
         ESP_LOGI(MODULE, "got ip:" IPSTR, IP2STR(&event->ip_info.ip));
         s_retry_num = 0;
         xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
     }
 }
 
-void wifi_init_sta(void) {
+void wifi_init_sta() {
     s_wifi_event_group = xEventGroupCreate();
 
     ESP_ERROR_CHECK(esp_netif_init());
@@ -73,16 +70,16 @@ void wifi_init_sta(void) {
     esp_event_handler_instance_t instance_any_id;
     esp_event_handler_instance_t instance_got_ip;
     ESP_ERROR_CHECK(
-        esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL, &instance_any_id));
+        esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, nullptr, &instance_any_id));
     ESP_ERROR_CHECK(
-        esp_event_handler_instance_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL, &instance_got_ip));
+        esp_event_handler_instance_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, nullptr, &instance_got_ip));
 
     wifi_config_t wifi_config = {
         .sta =
             {
                 .ssid = EXAMPLE_ESP_WIFI_SSID,
                 .password = EXAMPLE_ESP_WIFI_PASS,
-                /* Authmode threshold resets to WPA2 as default if password matches WPA2 standards (pasword len => 8).
+                /* Authmode threshold resets to WPA2 as default if password matches WPA2 standards (password len => 8).
                  * If you want to connect the device to deprecated WEP/WPA networks, Please set the threshold value
                  * to WIFI_AUTH_WEP/WIFI_AUTH_WPA_PSK and set the password with length and format matching to
                  * WIFI_AUTH_WEP/WIFI_AUTH_WPA_PSK standards.

@@ -2,6 +2,6 @@
 #define NETWORK_H
 
 void mdns_init_services();
-void wifi_init_sta(void);
+void wifi_init_sta();
 
 #endif

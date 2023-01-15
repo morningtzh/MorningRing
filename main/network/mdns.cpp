@@ -20,7 +20,7 @@ void mdns_init_services()
     mdns_instance_name_set("MorningRing bright your life");
 
     // 添加服务
-    mdns_service_add(NULL, "_http", "_tcp", 80, NULL, 0);
+    mdns_service_add(nullptr, "_http", "_tcp", 80, nullptr, 0);
 
     // 注意：必须先添加服务，然后才能设置其属性
     // web 服务器使用自定义的实例名
