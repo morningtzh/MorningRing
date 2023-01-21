@@ -9,32 +9,50 @@
 #include <map>
 #include <list>
 #include "restful.hpp"
+#include "mode.hpp"
 
 namespace light {
 
-    using ModeConfig = std::map<std::string, int>;
-
-    struct Mode {
+    struct ModeInfo {
         std::string name;
-        ModeConfig config;
+        mode::Creator creator;
+        mode::Destroyer destroier;
+        mode::Mode *mode;
+    };
+
+    struct LightBuffer {
+        uint8_t inside[182];
+        uint8_t outside[184];
     };
 
     class manager {
     private:
-        std::map<std::string, Mode> modeList;
-        std::string mode;
+        std::map<std::string, ModeInfo> modeList;
+        ModeInfo mode;
+        LightBuffer lightBuffer;
+        TaskHandle_t renderTaskHandle = nullptr;
 
     public:
         manager() {
-
-        }
+            memset(&lightBuffer, 0, sizeof(lightBuffer));
+        };
 
         std::list<std::string> GetModeList();
         bool SetMode(std::string name);
-        void GetModeConfig(std::string name);
-        void SetModeConfig(std::string name);
+        std::unique_ptr<mode::Config> GetModeConfig(const std::string& name);
+        bool SetModeConfig(std::string name, mode::Config &config);
 
-        void RegisterMode();
+        void RegisterMode(const std::string& name, mode::Creator c, mode::Destroyer d) {
+            modeList[name] = ModeInfo{
+                name,
+                c,
+                d,
+                nullptr
+            };
+        }
+
+        void Start();
+        void Stop();
     };
 }
 
