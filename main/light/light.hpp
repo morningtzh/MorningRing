@@ -10,6 +10,7 @@
 #include <list>
 #include "restful.hpp"
 #include "mode.hpp"
+#include "common.hpp"
 
 namespace light {
 
@@ -18,11 +19,6 @@ namespace light {
         mode::Creator creator;
         mode::Destroyer destroier;
         mode::Mode *mode;
-    };
-
-    struct LightBuffer {
-        uint8_t inside[182];
-        uint8_t outside[184];
     };
 
     class manager {

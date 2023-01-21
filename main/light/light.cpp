@@ -27,8 +27,6 @@ namespace light {
     }
 
     bool manager::SetMode(std::string name) {
-        bool find = false;
-
         auto m = modeList.find(name);
         if (m == modeList.end()) {
             ESP_LOGE(MODULE, "Set ModeInfo[%s] Failed, it's not exist", name.c_str());
