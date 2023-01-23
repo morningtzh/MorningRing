@@ -6,8 +6,10 @@ idf_component_register(
         "api/restful.cpp"
         "light/light.cpp"
         "light/mode.cpp"
+        "light/common_modes.cpp"
         "api/light_api.cpp"
         "utils/fast_hsv2rgb_8bit.c"
+        "utils/led_strip_encoder.c"
 
         INCLUDE_DIRS
         "."

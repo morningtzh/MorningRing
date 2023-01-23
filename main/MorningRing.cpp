@@ -9,14 +9,16 @@
 #include "freertos/task.h"
 
 #include "network/network.h"
+#include "light/light.hpp"
+#include "light/common_modes.hpp"
+#include "api/api_register.hpp"
 
 using namespace idf;
 using namespace std;
 
-static const char* MODULE = "MAIN";
+static const char *MODULE = "MAIN";
 
-void blink([[maybe_unused]] void *nothing)
-{
+void blink([[maybe_unused]] void *nothing) {
     /* The functions of GPIO_Output throws exceptions in case of parameter errors or if there are underlying driver
        errors. */
     try {
@@ -55,4 +57,14 @@ extern "C" [[maybe_unused]] void app_main(void) {
 
     ESP_LOGI(MODULE, "Will init mDNS");
     mdns_init_services();
+
+    InitApi();
+
+    REGISTER_LIGHT_MODE(HSVRing);
+    REGISTER_LIGHT_MODE(Test);
+    REGISTER_LIGHT_MODE(Single);
+
+
+    ESP_LOGI(MODULE, "Will start light");
+    light::manager()->SetMode("HSVRing");
 }
