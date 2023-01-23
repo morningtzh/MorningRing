@@ -1,10 +1,9 @@
 #include "esp_log.h"
 #include "mdns.h"
 
-static const char* MODULE = "mDNS";
+static const char *MODULE = "mDNS";
 
-void mdns_init_services()
-{
+void mdns_init_services() {
     ESP_LOGI(MODULE, "starting mDNS...");
 
     // 初始化 mDNS 服务
@@ -27,9 +26,9 @@ void mdns_init_services()
     mdns_service_instance_name_set("_http", "_tcp", "MorningRing bright your life");
 
     mdns_txt_item_t serviceTxtData[3] = {
-        {"board","esp32"},
-        {"u","user"},
-        {"p","password"}
+            {"board", "esp32"},
+            {"u",     "user"},
+            {"p",     "password"}
     };
     // 设置服务的文本数据（会释放并替换当前数据）
     mdns_service_txt_set("_http", "_tcp", serviceTxtData, 3);

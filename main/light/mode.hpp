@@ -9,63 +9,48 @@
 #include <map>
 #include <list>
 #include <memory>
+#include <functional>
 #include "common.hpp"
 #include "fast_hsv2rgb.h"
 
 class string;
 namespace light::mode {
-        using Config = std::map<std::string, int>;
+    using Config = std::map<std::string, int>;
 
-        class Mode {
-        private:
-            Config config;
+    class Mode {
+    private:
+        Config config;
+        bool dirty = true;
 
-        protected:
-            LightBuffer &lightBuffer;
-        public:
-            Mode(LightBuffer &lightBuffer) : lightBuffer(lightBuffer) {
-            };
+    protected:
+        LightBuffer &lightBuffer;
+    public:
+        Mode(LightBuffer &lightBuffer) : lightBuffer(lightBuffer) {};
 
-            virtual bool SetConfig(Config &newConfig) = 0;
-
-            virtual std::unique_ptr<Config> GetConfig() = 0;
-
-            virtual void CalculateNext() = 0;
-
-            virtual ~Mode() = default;
-
+        virtual bool SetConfig(Config &newConfig) {
+            return true;
         };
 
-        typedef Mode *(*Creator)(light::LightBuffer &);
-
-        typedef void (*Destroyer)(Mode *);
-
-        /***************** HSLRing Mode *************/
-
-        class HSLRing : Mode {
-        public:
-            HSLRing(LightBuffer lightBuffer) : Mode(lightBuffer) {
-                for (int i = 0; i < 182; i++) {
-                    lightBuffer.SetHSV(i, 360 * i / 182, 255, 255);
-                }
-            }
-
-            void CalculateNext() override {
-
-                uint8_t r, g, b;
-                lightBuffer.GetRGB(0, r, g, b);
-
-                for (int i = 0; i < 182 - 1; i++) {
-                    uint8_t r, g, b;
-                    lightBuffer.GetRGB(i + 1, r, g, b);
-                    lightBuffer.SetRGB(i, r, g, b);
-                }
-
-                lightBuffer.SetRGB(182 - 1, r, g, b);
-            }
+        virtual std::unique_ptr<Config> GetConfig() {
+            return std::make_unique<Config>();
         };
 
-    }
+        virtual void CalculateNext() = 0;
+
+        virtual ~Mode() = default;
+
+    };
+
+    using Creator = std::function<Mode *(light::LightBuffer &)>;
+    //typedef Mode *(*Creator)();
+
+    typedef void (*Destroyer)(Mode *);
+
+    template<typename T>
+    Mode *CreateMode(light::LightBuffer &lightBuffer) {
+        return new T(lightBuffer);
+    };
+}
 
 
 #endif //MORNINGRING_MODE_HPP
