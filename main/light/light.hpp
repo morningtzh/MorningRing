@@ -10,7 +10,6 @@
 #include <list>
 #include <utility>
 #include "driver/rmt_tx.h"
-#include "utils/led_strip_encoder.h"
 
 #include "restful.hpp"
 #include "mode.hpp"
@@ -18,13 +17,6 @@
 
 namespace light {
 
-    struct RmtInfo {
-        rmt_channel_handle_t led_chan = nullptr;
-        rmt_encoder_handle_t led_encoder = nullptr;
-        rmt_transmit_config_t tx_config{
-                .loop_count = 0, // no transfer loop
-        };
-    };
     struct ModeInfo {
         std::string name;
         mode::Creator creator = nullptr;
@@ -38,7 +30,6 @@ namespace light {
         ModeInfo mode;
         LightBuffer lightBuffer{};
         TaskHandle_t renderTaskHandle = nullptr;
-        RmtInfo rmt;
 
     public:
         Manager();
@@ -59,9 +50,9 @@ namespace light {
 
         void RegisterMode(const std::string &name, mode::Creator c, mode::Destroyer d);
 
-        void InitRMT();
+        void InitWs2812();
 
-        void TxRMT();
+        void TxWs2812();
     };
 
     Manager *manager();

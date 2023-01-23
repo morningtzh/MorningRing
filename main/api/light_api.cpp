@@ -30,7 +30,10 @@ esp_err_t GetModeList(httpd_req_t *r) {
 }
 
 esp_err_t SetMode(httpd_req_t *r) {
-    light::manager()->SetMode("aa");
+    char modeName[32];
+    httpd_query_key_value(r->uri, "mode", modeName, 32);
+
+    light::manager()->SetMode(modeName);
 
     return ESP_OK;
 }
@@ -42,7 +45,7 @@ esp_err_t SetModeConfig(httpd_req_t *r) { return ESP_OK; }
 
 void InitLightApi() {
     Restful::api()->RegisterUri("GetModes", "/api/light/modes", HTTP_GET, GetModeList);
-    Restful::api()->RegisterUri("SetMode", "/api/light/mode", HTTP_POST, GetModeList);
+    Restful::api()->RegisterUri("SetMode", "/api/light/mode", HTTP_POST, SetMode);
     Restful::api()->RegisterUri("GetModeConfig", "/api/light/mode/config", HTTP_GET, GetModeConfig);
     Restful::api()->RegisterUri("SetModeConfig", "/api/light/mode/config", HTTP_POST, SetModeConfig);
 }
