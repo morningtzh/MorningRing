@@ -23,32 +23,8 @@ class HSVRing : public Mode {
     }
 
     void CalculateNext() override {
-        {
-            uint8_t r, g, b;
-            lightBuffer.GetRGB(INSIDE_RING, 0, r, g, b);
-
-            for (int i = 0; i < LIGHT_INSIDE_POINTS - 1; i++) {
-                uint8_t r, g, b;
-                lightBuffer.GetRGB(INSIDE_RING, i + 1, r, g, b);
-                lightBuffer.SetRGB(INSIDE_RING, i, r, g, b);
-            }
-
-            lightBuffer.SetRGB(INSIDE_RING, LIGHT_INSIDE_POINTS - 1, r, g, b);
-        }
-        {
-            uint8_t r, g, b;
-            lightBuffer.GetRGB(OUTSIDE_RING, 0, r, g, b);
-
-            for (int i = 0; i < LIGHT_OUTSIDE_POINTS - 1; i++) {
-                uint8_t r, g, b;
-                lightBuffer.GetRGB(OUTSIDE_RING, i + 1, r, g, b);
-                lightBuffer.SetRGB(OUTSIDE_RING, i, r, g, b);
-            }
-
-            lightBuffer.SetRGB(OUTSIDE_RING, LIGHT_OUTSIDE_POINTS - 1, r, g, b);
-        }
-        //            lightBuffer.Rotate(INSIDE_RING, CLOCKWISE, 1);
-        //            lightBuffer.Rotate(OUTSIDE_RING, COUNTERCLOCKWISE, 2);
+        lightBuffer.Rotate(INSIDE_RING, CLOCKWISE, 1);
+        lightBuffer.Rotate(OUTSIDE_RING, COUNTERCLOCKWISE, 2);
     }
 };
 

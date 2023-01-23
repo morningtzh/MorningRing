@@ -5,6 +5,8 @@
 #ifndef MORNINGRING_COMMON_HPP
 #define MORNINGRING_COMMON_HPP
 
+#include <list>
+
 #include "esp_log.h"
 #include "fast_hsv2rgb.h"
 
@@ -37,7 +39,6 @@ namespace light {
         }
 
         void GetRGB(int side, int index, uint8_t &r, uint8_t &g, uint8_t &b) {
-
             RGB *buffer = side == INSIDE_RING ? inside : outside;
 
             r = buffer[index].r;
@@ -56,34 +57,42 @@ namespace light {
             buffer[index].b = b;
         }
 
+        // 旋转buffer，但step不为1的情况下视觉效果较差。
         void Rotate(int side, int direction = CLOCKWISE, int step = 1) {
             RGB *buffer = side == INSIDE_RING ? inside : outside;
-            RGB *pool = (RGB *) malloc(sizeof(RGB) * step);
+            std::list<RGB> pool;
             int len = side == INSIDE_RING ? LIGHT_INSIDE_POINTS : LIGHT_OUTSIDE_POINTS;
 
             if (direction == CLOCKWISE) {
-                for (int poolIndex = 0; poolIndex < step; poolIndex++) {
-                    pool[poolIndex] = buffer[len - 1 - (step - 1 - poolIndex)];
+
+                for (int i = len - 1; i > 0; i--) {
+
+                    if (pool.size() < step) {
+                        pool.push_back(buffer[i]);
+                        buffer[i] = buffer[i-step];
+                    }else {
+                        buffer[i] = buffer[i-step];
+
+                    }
                 }
 
-                for (int i = step; i < len; i++) {
-                    buffer[i] = buffer[i-step];
-                }
-
-                for (int i = 0; i < step; i++) {
-                    buffer[i] = pool[i];
+                for (int i = step - 1; i >= 0; i--) {
+                    buffer[i] = pool.front();
+                    pool.pop_front();
                 }
             } else {
-                for (int poolIndex = step - 1; poolIndex >= 0; poolIndex--) {
-                    pool[poolIndex] = buffer[poolIndex];
+                for (int i = 0; i < len - step; i++) {
+                    if (pool.size() < step) {
+                        pool.push_back(buffer[i]);
+                        buffer[i] = buffer[i+step];
+                    } else {
+                        buffer[i] = buffer[i+step];
+                    }
                 }
 
-                for (int i = len - 1 - step; i >= 0; i--) {
-                    buffer[i] = buffer[i+step];
-                }
-
-                for (int i = len - 1; i > len - 1 - step; i--) {
-                    buffer[i] = pool[i];
+                for (int i = len - step; i < len; i++) {
+                    buffer[i] = pool.front();
+                    pool.pop_front();
                 }
             }
         }
