@@ -9,7 +9,7 @@ idf_component_register(
         "light/common_modes.cpp"
         "api/light_api.cpp"
         "utils/fast_hsv2rgb_8bit.c"
-        "utils/SPI_ws2812.c"
+        "light/SPI_ws2812.cpp"
 
         INCLUDE_DIRS
         "."

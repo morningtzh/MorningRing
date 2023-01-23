@@ -9,11 +9,12 @@
 #include <map>
 #include <list>
 #include <utility>
-#include "driver/rmt_tx.h"
 
 #include "restful.hpp"
 #include "mode.hpp"
 #include "common.hpp"
+#include "SPI_ws2812.hpp"
+
 
 namespace light {
 
@@ -28,8 +29,11 @@ namespace light {
     private:
         std::map<std::string, ModeInfo> modeList;
         ModeInfo mode;
-        LightBuffer lightBuffer{};
         TaskHandle_t renderTaskHandle = nullptr;
+
+        LightBuffer lightBuffer{};
+        Ws2812Spi inside2812;
+        Ws2812Spi outside2812;
 
     public:
         Manager();

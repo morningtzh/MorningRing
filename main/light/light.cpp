@@ -6,17 +6,15 @@
 
 #include <memory>
 
-extern "C" {
-#include "SPI_ws2812.h"
-}
-
 static const char *MODULE = "Light";
 
 namespace light {
 
 #define EXAMPLE_CHASE_SPEED_MS 10
 
-    Manager::Manager() { InitWs2812(); }
+    Manager::Manager() :
+            inside2812(GPIO_NUM_13, LIGHT_INSIDE_POINTS, lightBuffer.inside),
+            outside2812(GPIO_NUM_12, LIGHT_OUTSIDE_POINTS, lightBuffer.outside) {}
 
     std::list<std::string> Manager::GetModeList() {
         std::list<std::string> list;
@@ -88,9 +86,10 @@ namespace light {
         ESP_LOGI(MODULE, "Light Mode[%s] Registered", name.c_str());
     }
 
-    void Manager::InitWs2812() { initSPIws2812(); }
-
-    void Manager::TxWs2812() { led_strip_update(lightBuffer.inside); }
+    void Manager::TxWs2812() {
+        inside2812.led_strip_update();
+        outside2812.led_strip_update();
+    }
 
     Manager *manager() {
         static class Manager *m = nullptr;
