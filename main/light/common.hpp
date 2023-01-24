@@ -59,6 +59,12 @@ namespace light {
 
         // 旋转buffer，但step不为1的情况下视觉效果较差。
         void Rotate(int side, int direction = CLOCKWISE, int step = 1) {
+
+            if ((direction != CLOCKWISE && direction != COUNTERCLOCKWISE) ||
+            (side != INSIDE_RING && side != OUTSIDE_RING) || (step >= 20 || step < 1)) {
+                ESP_LOGE("LightBuf", "Input invaild %d, %d, %d", side, direction, step);
+            }
+
             RGB *buffer = side == INSIDE_RING ? inside : outside;
             std::list<RGB> pool;
             int len = side == INSIDE_RING ? LIGHT_INSIDE_POINTS : LIGHT_OUTSIDE_POINTS;
@@ -98,6 +104,5 @@ namespace light {
         }
     };
 }
-
 
 #endif //MORNINGRING_COMMON_HPP

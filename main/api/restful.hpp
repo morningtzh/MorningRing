@@ -8,6 +8,7 @@
 #include <map>
 #include <string>
 #include <esp_log.h>
+#include <list>
 #include "esp_http_server.h"
 
 typedef esp_err_t (*RestfulHandler)(httpd_req_t *r);
@@ -43,6 +44,11 @@ public:
         Restful::api()->RegisterUri(name, uri, method, handle);
     }
 };
+
+bool GetQuery(httpd_req_t *r, const std::string &key, std::string &value);
+std::list<std::pair<std::string, std::string>> GetQuery(httpd_req_t *r, std::list<std::string>);
+
+bool GetData(httpd_req_t *r, std::string &data);
 
 #define RESTFUL_REGISTER(name, uri, method, handle)  \
 RestfulRegister RestfulRegister##__FILE__##__LINE__##name(#name, uri, method, handle);

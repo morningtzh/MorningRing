@@ -40,7 +40,7 @@ namespace light {
         delete mode.mode;
 
         mode = m->second;
-        mode.mode = mode.creator(lightBuffer);
+        mode.mode = mode.creator(lightBuffer, true);
 
         Start();
 
@@ -50,10 +50,27 @@ namespace light {
     }
 
     std::unique_ptr<mode::Config> Manager::GetModeConfig(const std::string &name) {
-        return std::make_unique<mode::Config>();
+
+        if (modeList.find(name) == modeList.end()) {
+            ESP_LOGE(MODULE, "Get Mode[%s] Config not exist", name.c_str());
+            return nullptr;
+        }
+
+        auto tmpMode = mode.name == name ? mode.mode : modeList[name].creator(lightBuffer, false);
+
+        return tmpMode->GetConfig();
     }
 
-    bool Manager::SetModeConfig(std::string name, mode::Config &config) { return false; }
+    bool Manager::SetModeConfig(std::string name, mode::Config &config) {
+        if (modeList.find(name) == modeList.end()) {
+            ESP_LOGE(MODULE, "Set Mode[%s] Config not exist", name.c_str());
+            return false;
+        }
+
+        auto tmpMode = mode.name == name ? mode.mode : modeList[name].creator(lightBuffer, false);
+
+        return tmpMode->SetConfig(config);
+    }
 
     [[noreturn]] void RenderNext(void *m) {
         auto mode = (mode::Mode *) m;
