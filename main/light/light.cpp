@@ -5,6 +5,7 @@
 #include "light.hpp"
 
 #include <memory>
+#include <utility>
 
 static const char *MODULE = "Light";
 
@@ -19,16 +20,16 @@ namespace light {
     std::list<std::string> Manager::GetModeList() {
         std::list<std::string> list;
 
-        for (auto &mode: modeList) {
-            list.emplace_back(mode.first);
+        for (auto &tmpMode: modeList) {
+            list.emplace_back(tmpMode.first);
         }
 
         return list;
     }
 
-    std::string Manager::GetMode() { return mode.name; }
+    std::string Manager::GetMode() const { return mode.name; }
 
-    bool Manager::SetMode(std::string name) {
+    bool Manager::SetMode(const std::string& name) {
         auto m = modeList.find(name);
         if (m == modeList.end()) {
             ESP_LOGE(MODULE, "Set ModeInfo[%s] Failed, it's not exist", name.c_str());
@@ -49,7 +50,7 @@ namespace light {
         return true;
     }
 
-    std::unique_ptr<mode::Config> Manager::GetModeConfig(const std::string &name) {
+    std::unique_ptr<ConfigData> Manager::GetModeConfig(const std::string &name) {
 
         if (modeList.find(name) == modeList.end()) {
             ESP_LOGE(MODULE, "Get Mode[%s] Config not exist", name.c_str());
@@ -58,10 +59,10 @@ namespace light {
 
         auto tmpMode = mode.name == name ? mode.mode : modeList[name].creator(lightBuffer, false);
 
-        return tmpMode->GetConfig();
+        return tmpMode->config.all();
     }
 
-    bool Manager::SetModeConfig(std::string name, mode::Config &config) {
+    bool Manager::SetModeConfig(const std::string& name, ConfigData &config) {
         if (modeList.find(name) == modeList.end()) {
             ESP_LOGE(MODULE, "Set Mode[%s] Config not exist", name.c_str());
             return false;
@@ -69,7 +70,7 @@ namespace light {
 
         auto tmpMode = mode.name == name ? mode.mode : modeList[name].creator(lightBuffer, false);
 
-        return tmpMode->SetConfig(config);
+        return tmpMode->config.set(config);
     }
 
     [[noreturn]] void RenderNext(void *m) {
@@ -98,7 +99,7 @@ namespace light {
     }
 
     void Manager::RegisterMode(const std::string &name, mode::Creator c, mode::Destroyer d) {
-        modeList[name] = ModeInfo{name, c, d};
+        modeList[name] = ModeInfo{name, std::move(c), d};
 
         ESP_LOGI(MODULE, "Light Mode[%s] Registered", name.c_str());
     }

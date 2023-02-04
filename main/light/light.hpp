@@ -21,7 +21,7 @@ namespace light {
     struct ModeInfo {
         std::string name;
         mode::Creator creator = nullptr;
-        mode::Destroyer destroier = nullptr;
+        [[maybe_unused]] mode::Destroyer destroier = nullptr;
         mode::Mode *mode = nullptr;
     };
 
@@ -40,13 +40,13 @@ namespace light {
 
         std::list<std::string> GetModeList();
 
-        std::string GetMode();
+        [[nodiscard]] std::string GetMode() const;
 
-        bool SetMode(std::string name);
+        bool SetMode(const std::string& name);
 
-        std::unique_ptr<mode::Config> GetModeConfig(const std::string &name);
+        std::unique_ptr<ConfigData> GetModeConfig(const std::string &name);
 
-        bool SetModeConfig(std::string name, mode::Config &config);
+        bool SetModeConfig(const std::string& name, ConfigData &config);
 
         void Start();
 
@@ -54,26 +54,14 @@ namespace light {
 
         void RegisterMode(const std::string &name, mode::Creator c, mode::Destroyer d);
 
-        void InitWs2812();
-
         void TxWs2812();
     };
 
     Manager *manager();
-
-    class LightModeRegister {
-    public:
-        LightModeRegister(const std::string &name, mode::Creator c, mode::Destroyer d) {
-            manager()->RegisterMode(name, std::move(c), d);
-        }
-    };
 }
 
 #define REGISTER_LIGHT_MODE(name) { \
     light::manager()->RegisterMode(#name, light::mode::CreateMode<light::mode::name>, nullptr); \
 }
-
-#define LIGHT_MODE_REGISTER(name)  \
-    LightModeRegister lightModeRegister##name(#name, CreateMode<name>, nullptr);
 
 #endif //MORNINGRING_LIGHT_HPP

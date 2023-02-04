@@ -10,7 +10,7 @@
 
 #include "network/network.h"
 #include "light/light.hpp"
-#include "light/common_modes.hpp"
+#include "light/modes/common_modes.hpp"
 #include "api/api_register.hpp"
 
 using namespace idf;

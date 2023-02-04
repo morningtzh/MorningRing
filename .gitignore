@@ -1,5 +1,6 @@
 /build
 /.vscode
+/.idea
 /managed_components
 /cmake-build-*
 sdkconfig.old

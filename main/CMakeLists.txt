@@ -1,21 +1,17 @@
 idf_component_register(
-        SRCS
-        "MorningRing.cpp"
-        "network/wifi.cpp"
-        "network/mdns.cpp"
-        "api/restful.cpp"
-        "light/light.cpp"
-        "light/mode.cpp"
-        "light/common_modes.cpp"
-        "api/light_api.cpp"
-        "utils/fast_hsv2rgb_8bit.c"
-        "light/SPI_ws2812.cpp"
+        SRC_DIRS
+        "."
+        "network"
+        "api"
+        "light"
+        "utils"
 
         INCLUDE_DIRS
         "."
         "./network"
         "./api"
         "./light"
+        "./light/modes"
         "./utils"
         #
         #        PRIV_REQUIRES nvs_flash esp_wifi
