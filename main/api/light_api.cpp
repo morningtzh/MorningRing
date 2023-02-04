@@ -8,7 +8,7 @@
 #include "light.hpp"
 #include "restful.hpp"
 
-static const char *MODULE = "LightApi";
+[[maybe_unused]] static const char *MODULE = "LightApi";
 
 esp_err_t GetModeList(httpd_req_t *r) {
     auto modeList = light::manager()->GetModeList();
@@ -79,7 +79,7 @@ esp_err_t GetModeConfig(httpd_req_t *r) {
 esp_err_t SetModeConfig(httpd_req_t *r) {
     std::string modeName;
     std::string data;
-    light::mode::Config config;
+    ConfigData config;
 
     if (!(GetQuery(r, "mode", modeName) && GetData(r,data))) {
         httpd_resp_send_err(r, HTTPD_404_NOT_FOUND, "No query or data");
@@ -122,15 +122,6 @@ esp_err_t SetModeConfig(httpd_req_t *r) {
 }
 
 typedef esp_err_t (*RestfulHandler)(httpd_req_t *r);
-
-//RestfulHandler D(RestfulHandler h) {
-//
-//    return ([h](httpd_req_t *r) -> esp_err_t {
-//        ESP_LOGI(MODULE, "Request %d %s", r->method, r->uri);
-//        esp_err_t ret = h(r);
-//    });
-//}
-
 
 void InitLightApi() {
     Restful::api()->RegisterUri("GetModes", "/api/light/modes", HTTP_GET, GetModeList);

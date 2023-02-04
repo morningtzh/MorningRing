@@ -2,20 +2,20 @@
 // Created by MorningTZH on 2023/1/22.
 //
 
-#include "light.hpp"
-#include "mode.hpp"
+#include "../light.hpp"
+#include "../mode.hpp"
 
 namespace light::mode {
 
-    static const char *MODULE = "LightMode";
+    [[maybe_unused]] static const char *MODULE = "LightMode";
 
 /***************** HSVRing Mode *************/
     class HSVRing : public Mode {
 
-        static Config defaultConfig;
+        static ConfigData defaultConfig;
 
     public:
-        explicit HSVRing(LightBuffer &lightBuffer, bool start = true) : Mode(lightBuffer, "HSVRing", defaultConfig) {
+        [[maybe_unused]] explicit HSVRing(LightBuffer &lightBuffer, bool start = true) : Mode(lightBuffer, "HSVRing", defaultConfig) {
             if (start) {
                 for (int i = 0; i < LIGHT_INSIDE_POINTS; i++) {
                     lightBuffer.SetHSV(INSIDE_RING, i, HSV_HUE_MAX * i / LIGHT_INSIDE_POINTS, 255, 255);
@@ -28,16 +28,16 @@ namespace light::mode {
         }
 
         void CalculateNext() override {
-            lightBuffer.Rotate(INSIDE_RING, GetConfig("InsideRingDirect"), GetConfig("InsideRingStep"));
-            lightBuffer.Rotate(OUTSIDE_RING, GetConfig("OutsideRingDirect"), GetConfig("OutsideRingStep"));
+            lightBuffer.Rotate(INSIDE_RING, config.get("InsideRingDirect"), config.get("InsideRingStep"));
+            lightBuffer.Rotate(OUTSIDE_RING, config.get("OutsideRingDirect"), config.get("OutsideRingStep"));
         }
     };
 
-    Config HSVRing::defaultConfig{
-            {"InsideRingDirect", {CLOCKWISE}},
+    ConfigData HSVRing::defaultConfig{
+            {"InsideRingDirect",  {CLOCKWISE}},
             {"OutsideRingDirect", {COUNTERCLOCKWISE}},
-            {"InsideRingStep", {1}},
-            {"OutsideRingStep", {2}},
+            {"InsideRingStep",    {1}},
+            {"OutsideRingStep",   {2}},
     };
 
 /***************** Test Mode *************/
@@ -46,7 +46,7 @@ namespace light::mode {
         int hue = 0;
 
     public:
-        explicit Test(LightBuffer &lightBuffer, bool start) : Mode(lightBuffer) {
+        [[maybe_unused]] explicit Test(LightBuffer &lightBuffer, bool start) : Mode(lightBuffer) {
             for (int i = 0; i < LIGHT_INSIDE_POINTS; i++) {
                 lightBuffer.SetHSV(INSIDE_RING, i, hue, 255, 255);
             }
@@ -65,7 +65,7 @@ namespace light::mode {
         bool dir = true;
 
     public:
-        explicit Single(LightBuffer &lightBuffer, bool start) : Mode(lightBuffer) {
+        [[maybe_unused]] explicit Single(LightBuffer &lightBuffer, bool start) : Mode(lightBuffer) {
             if (start) {
                 for (int i = 0; i < LIGHT_INSIDE_POINTS; i++) {
                     lightBuffer.SetRGB(INSIDE_RING, i, 0, 0, 0);
