@@ -37,7 +37,6 @@ namespace light::mode {
         virtual ~Mode();
 
         virtual void CalculateNext() = 0;
-
     };
 
     using Creator = std::function<Mode *(light::LightBuffer &, bool start)>;
