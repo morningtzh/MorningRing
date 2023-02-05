@@ -30,5 +30,4 @@ public:
     int get(const std::string& key);
 };
 
-
 #endif //MORNINGRING_CONFIG_HPP

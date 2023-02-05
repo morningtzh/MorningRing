@@ -8,13 +8,12 @@
 #include <memory>
 #include "esp_log.h"
 
-
-static const char *MODULE = "Light";
+static const char *MODULE = "Config";
 
 std::string ShortKey(const std::string& key) {
     std::string shortKey;
     for (auto &c : key) {
-        if (isupper(c)) {
+        if (isupper(c) || isdigit(c)) {
             shortKey.push_back(c);
         }
     }

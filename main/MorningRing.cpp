@@ -8,7 +8,8 @@
 #include "gpio_cxx.hpp"
 #include "freertos/task.h"
 
-#include "network/network.h"
+#include "utils/global.hpp"
+#include "network/network.hpp"
 #include "light/light.hpp"
 #include "light/modes/common_modes.hpp"
 #include "api/api_register.hpp"
@@ -58,12 +59,16 @@ extern "C" [[maybe_unused]] void app_main(void) {
     ESP_LOGI(MODULE, "Will init mDNS");
     mdns_init_services();
 
+    ESP_LOGI(MODULE, "Will init NTP");
+    init_ntp();
+
+    ESP_LOGI(MODULE, "Will init API");
     InitApi();
 
+    ESP_LOGI(MODULE, "Will Register Light Mode");
     REGISTER_LIGHT_MODE(HSVRing);
     REGISTER_LIGHT_MODE(Test);
     REGISTER_LIGHT_MODE(Single);
-
 
     ESP_LOGI(MODULE, "Will start light");
     light::manager()->SetMode("HSVRing");

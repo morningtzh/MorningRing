@@ -4,3 +4,4 @@
 /managed_components
 /cmake-build-*
 sdkconfig.old
+/main/utils/global.hpp

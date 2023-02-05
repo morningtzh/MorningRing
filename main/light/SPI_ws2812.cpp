@@ -7,8 +7,6 @@
 
 #include "SPI_ws2812.hpp"
 
-#define POWER_LIMIT 0.1
-
 int SPI_USED = 0;
 
 Ws2812Spi::Ws2812Spi(int pin, int ledNum, light::RGB *buffer) : pin(pin), ledNum(ledNum),
@@ -59,9 +57,9 @@ void Ws2812Spi::led_strip_update() {
     int n = 0;
     for (i = 0; i < ledNum; i++) {
 
-        auto r = (uint8_t)(buffer[i].r * POWER_LIMIT);
-        auto g = (uint8_t)(buffer[i].g * POWER_LIMIT);
-        auto b = (uint8_t)(buffer[i].b * POWER_LIMIT);
+        auto r = (uint8_t)(buffer[i].r * powerLimit);
+        auto g = (uint8_t)(buffer[i].g * powerLimit);
+        auto b = (uint8_t)(buffer[i].b * powerLimit);
 
         //R
         ledDMAbuffer[n++] = LedBitPattern[0x0f & (r >> 4)];

@@ -21,6 +21,8 @@ struct SPISettings {
     spi_bus_config_t buscfg;
 } ;
 
+#define MAX_POWER_LIMIT 0.1
+
 class Ws2812Spi {
 
 private:
@@ -29,6 +31,7 @@ private:
     int dmaSize;
     light::RGB *buffer;
     uint16_t *ledDMAbuffer;
+    float powerLimit = MAX_POWER_LIMIT;
 
     static bool spiInit;
 
@@ -55,6 +58,9 @@ private:
 public:
     Ws2812Spi(int pin, int ledNum, light::RGB *buffer);
     void led_strip_update();
+    void SetPower(float powerPercent) {
+        powerLimit = powerPercent * MAX_POWER_LIMIT;
+    }
 };
 
 
