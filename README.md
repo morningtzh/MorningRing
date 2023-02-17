@@ -93,6 +93,7 @@ sequenceDiagram
     MorningRing B->>-终端设备: Res:/api/device-info
     终端设备->>+MorningRing A: Req:/api/device-info
     MorningRing A->>-终端设备: Res:/api/device-info
+    MorningRing A-->>MorningRing B: UDP广播A设备信息
 ```
 
 
