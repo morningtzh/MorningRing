@@ -77,16 +77,12 @@ sequenceDiagram
     MorningRing A->>MorningRing A: 启动
     MorningRing A--xMorningRing B: UDP广播A设备信息并期待返回
     MorningRing A-->>终端设备: mDNS组播 MorningRing.local 域名
-    MorningRing A-->>终端设备: mDNS组播 1.MorningRing.local 域名
-    MorningRing A-->>终端设备: mDNS组播 NameA.MorningRing.local 域名
     MorningRing B->>MorningRing B: 启动
     MorningRing B-->>+MorningRing A: UDP广播B设备信息并期待返回
     MorningRing A->>MorningRing A: 记录B设备信息
     MorningRing A->>-MorningRing B: UDP发送A设备信息
     MorningRing B->>MorningRing B: 记录A设备信息,自身序号递增
     MorningRing B-->>终端设备: mDNS组播 MorningRing.local 域名
-    MorningRing B-->>终端设备: mDNS组播 2.MorningRing.local 域名
-    MorningRing B-->>终端设备: mDNS组播 NameB.MorningRing.local 域名
     终端设备->>+MorningRing B:访问MorningRing.local
     MorningRing B->>-终端设备: 基础html
     终端设备->OBS: 下拉js / css资源文件
