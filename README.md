@@ -69,3 +69,34 @@ Moodmoon实在是太好看了，我非常喜欢光影效果，当发现他可以
 
  - 一个是根据各类计算函数进行颜色变化，可以参考各类开源软件
  - 另一个考虑到摈弃工科生思维，从艺术创作角度考虑，需要提供更自由的视觉表达能力，因此增加短视频 / GIF解析能力，素材建议是2D色块动画，需要制作processing / unity / cocos2d 素材模板，最终会根据素材圆环内外进行计算，组成变换矩阵，直接显示。
+
+## 多设备交互流程图
+
+``` mermaid
+sequenceDiagram
+    MorningRing A->>MorningRing A: 启动
+    MorningRing A--xMorningRing B: UDP广播A设备信息并期待返回
+    MorningRing A-->>终端设备: mDNS组播 MorningRing.local 域名
+    MorningRing A-->>终端设备: mDNS组播 1.MorningRing.local 域名
+    MorningRing A-->>终端设备: mDNS组播 NameA.MorningRing.local 域名
+    MorningRing B->>MorningRing B: 启动
+    MorningRing B-->>+MorningRing A: UDP广播B设备信息并期待返回
+    MorningRing A->>MorningRing A: 记录B设备信息
+    MorningRing A->>-MorningRing B: UDP发送A设备信息
+    MorningRing B->>MorningRing B: 记录A设备信息,自身序号递增
+    MorningRing B-->>终端设备: mDNS组播 MorningRing.local 域名
+    MorningRing B-->>终端设备: mDNS组播 2.MorningRing.local 域名
+    MorningRing B-->>终端设备: mDNS组播 NameB.MorningRing.local 域名
+    终端设备->>+MorningRing B:访问MorningRing.local
+    MorningRing B->>-终端设备: 基础html
+    终端设备->OBS: 下拉js / css资源文件
+    终端设备->终端设备: 单页Web应用渲染
+    终端设备->>+MorningRing B: Req:/api/device-list
+    MorningRing B->>-终端设备: Res:/api/device-list
+    终端设备->>+MorningRing B: Req:/api/device-info
+    MorningRing B->>-终端设备: Res:/api/device-info
+    终端设备->>+MorningRing A: Req:/api/device-info
+    MorningRing A->>-终端设备: Res:/api/device-info
+```
+
+
