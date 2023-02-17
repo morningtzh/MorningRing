@@ -85,7 +85,7 @@ sequenceDiagram
     MorningRing B-->>终端设备: mDNS组播 MorningRing.local 域名
     终端设备->>+MorningRing B:访问MorningRing.local
     MorningRing B->>-终端设备: 基础html
-    终端设备->OBS: 下拉js / css资源文件
+    终端设备->OBS or Github: 下拉js / css资源文件
     终端设备->终端设备: 单页Web应用渲染
     终端设备->>+MorningRing B: Req:/api/device-list
     MorningRing B->>-终端设备: Res:/api/device-list
