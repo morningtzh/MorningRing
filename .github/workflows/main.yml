@@ -23,21 +23,21 @@ jobs:
         path: |
           build/MorningRing.bin
           build/version.txt
+          
   UploadOSS:
     runs-on: ubuntu-latest
     needs: BuildBin
+    environment: AliyunOSS
 
     steps:
     - name: Download OSSutil
       run: wget ${{ vars.OSSUTIL_DOWNLOADURL }} -O ossutil
     - run: chmod +x ossutil
     - name: Set ossutilconfig
-      run: echo ${{ secrets.OSSUTILCONFIG }} > ossutilconfig
+      run: echo "${{ secrets.OSSUTILCONFIG }}" > ossutilconfig
     - name: Download artifacts
       uses: actions/download-artifact@v3
-      with:
-        path: ./artifacts
-    - run: echo "::notice Version `cat artifacts/version.txt` will upload"
-    - run: ./ossutil cp ./artifacts/MorningRing.bin oss://morningring/MorningRing.bin -y
-    - run: ./ossutil cp ./artifacts/MorningRing.bin oss://morningring/MorningRing.`cat artifacts/version.txt`.bin -y
-    - run: echo "::notice Version `cat artifacts/version.txt` uploaded"
+    - run: echo "::notice Version `cat artifact/version.txt` will upload"
+    - run: ./ossutil cp ./artifact/MorningRing.bin oss://morningring/MorningRing.bin -f -c ossutilconfig
+    - run: ./ossutil cp ./artifact/MorningRing.bin oss://morningring/MorningRing.`cat artifact/version.txt`.bin -f -c ossutilconfig
+    - run: echo "::notice Version `cat artifact/version.txt` uploaded"
