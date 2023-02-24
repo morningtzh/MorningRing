@@ -40,7 +40,7 @@ Config::Config(const std::string &configPrefix, const ConfigData &defaultConfig)
 
         err = nvs_get_i32(my_handle, hwKey.c_str(), &storage_value);
         if (err != ESP_OK) {
-            ESP_LOGW(MODULE, "Nvs can't find key [%s] (%s)!\n", hwKey.c_str(), esp_err_to_name(err));
+            ESP_LOGE(MODULE, "Error nvs (%s) reading!\n", esp_err_to_name(err));
         } else {
             _config[key].value = storage_value;
         }

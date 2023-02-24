@@ -5,10 +5,13 @@ idf_component_register(
         "api"
         "light"
         "utils"
+        "system"
+
 
         INCLUDE_DIRS
         "."
         "./network"
+        "./system"
         "./api"
         "./light"
         "./light/modes"
