@@ -28,8 +28,8 @@ namespace light::mode {
         }
 
         void CalculateNext() override {
-            lightBuffer.Rotate(INSIDE_RING, config.get("InsideRingDirect"), config.get("InsideRingStep"));
-            lightBuffer.Rotate(OUTSIDE_RING, config.get("OutsideRingDirect"), config.get("OutsideRingStep"));
+            lightBuffer.Rotate(INSIDE_RING, config.get<int>("InsideRingDirect"), config.get<int>("InsideRingStep"));
+            lightBuffer.Rotate(OUTSIDE_RING, config.get<int>("OutsideRingDirect"), config.get<int>("OutsideRingStep"));
         }
     };
 
