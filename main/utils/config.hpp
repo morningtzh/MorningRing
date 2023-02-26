@@ -8,13 +8,19 @@
 #include <map>
 #include <string>
 #include <memory>
+#include <any>
 
 struct ConfigItem {
-    int32_t value;
+    std::any value;
+
+
+};
+
+struct ConfigItem2 {
+    std::any value;
 };
 
 using ConfigData = std::map<std::string, ConfigItem>;
-
 
 class Config {
     std::string configPrefix;
@@ -27,7 +33,16 @@ public:
 
     std::unique_ptr<ConfigData> all();
 
-    int get(const std::string& key);
+    std::any get(const std::string &key);
+
+    template<typename T>
+    T get(const std::string &key);
+
+    bool set(const std::string &key, std::any value);
+
+    template<typename T>
+    bool set(const std::string &key, T value);
+
 };
 
 #endif //MORNINGRING_CONFIG_HPP
