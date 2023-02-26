@@ -56,7 +56,6 @@ static void RecvDeviceInfoTask(void *pvParameters) {
     // 该任务启动前应该先广播一次，因此此时暂时不广播
     time_t lastBoardcast = time(nullptr);
 
-
     while (true) {
         int len = recvfrom(DEVICE_SOCKET, rx_buffer, sizeof(rx_buffer) - 1, 0, (sockaddr *)&source_addr, &socklen);
         if (len < 0) {
@@ -71,8 +70,6 @@ static void RecvDeviceInfoTask(void *pvParameters) {
         // TODO: 数据处理
 
         time_t now = time(nullptr);
-
-
     }
 }
 
@@ -106,7 +103,7 @@ bool InitSocket() {
 
 
 int StartDetectDevice() {
-
+    InitSocket();
 
 
 }
